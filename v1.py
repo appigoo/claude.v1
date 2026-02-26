@@ -19,13 +19,13 @@ import time
 # ═══════════════════════════════════════════════════════════
 
 st.set_page_config(
-page_title=“📈 股票智能掃描系統 v2.0”,
-page_icon=“📈”,
-layout=“wide”,
-initial_sidebar_state=“expanded”
+page_title="📈 股票智能掃描系統 v2.0",
+page_icon="📈",
+layout="wide",
+initial_sidebar_state="expanded"
 )
 
-st.markdown(”””
+st.markdown("""
 
 <style>
 .stApp { background-color: #0d0d0d; color: #e0e0e0; }
@@ -129,7 +129,7 @@ return buy_score, sell_score
 
 def generate_signal(df, shares=10):
 if len(df) < 30:
-return “觀望”, None, None, None, {}
+return "觀望", None, None, None, {}
 last  = df.iloc[-1]
 prev  = df.iloc[-2]
 price = float(last[‘Close’])
@@ -311,7 +311,7 @@ return {
 # ═══════════════════════════════════════════════════════════
 
 @st.cache_data(ttl=60)
-def fetch_data(ticker, period=“5d”, interval=“5m”):
+def fetch_data(ticker, period="5d", interval="5m"):
 try:
 df = yf.download(ticker, period=period, interval=interval,
 auto_adjust=True, progress=False)
@@ -321,7 +321,7 @@ return calc_indicators(df)
 except: return None
 
 @st.cache_data(ttl=300)
-def fetch_backtest_data(ticker, period=“60d”, interval=“5m”):
+def fetch_backtest_data(ticker, period="60d", interval="5m"):
 try:
 df = yf.download(ticker, period=period, interval=interval,
 auto_adjust=True, progress=False)
@@ -340,7 +340,7 @@ def plot_main_chart(df, ticker, signal, buy_price, stop_loss, target, trades_df=
 df_plot = df.tail(120).copy()
 fig = make_subplots(rows=3, cols=1, shared_xaxes=True,
 row_heights=[0.6, 0.2, 0.2], vertical_spacing=0.02,
-subplot_titles=(f”{ticker} 5分K”, “成交量”, “MACD(12,26,9)”))
+subplot_titles=(f"{ticker} 5分K", "成交量", "MACD(12,26,9)"))
 
 ```
 fig.add_trace(go.Candlestick(
@@ -405,16 +405,16 @@ fig = go.Figure()
 fig.add_trace(go.Scatter(
 x=list(range(len(eq_curve))), y=eq_curve,
 fill=‘tozeroy’, fillcolor=‘rgba(0,200,100,0.08)’,
-line=dict(color=’#00e676’, width=2), name=“資金曲線”
+line=dict(color=’#00e676’, width=2), name="資金曲線"
 ))
 fig.add_hline(y=init_cap, line_color=’#555’, line_dash=‘dash’,
-annotation_text=f”初始資金 {init_cap:,.0f}”)
+annotation_text=f"初始資金 {init_cap:,.0f}")
 fig.update_layout(
-title=f”📈 資金曲線  |  最終: {eq_curve[-1]:,.0f}  |  報酬: {stats.get(‘總報酬%’,0):+.1f}%”,
+title=f"📈 資金曲線  |  最終: {eq_curve[-1]:,.0f}  |  報酬: {stats.get(‘總報酬%’,0):+.1f}%",
 height=300, template=‘plotly_dark’,
 paper_bgcolor=’#0d0d0d’, plot_bgcolor=’#151520’,
 margin=dict(l=50, r=30, t=50, b=30),
-xaxis_title=“K棒序號”, yaxis_title=“資金(元)”
+xaxis_title="K棒序號", yaxis_title="資金(元)"
 )
 return fig
 
@@ -422,10 +422,10 @@ def plot_pnl_distribution(trades_df):
 wins  = trades_df[trades_df[‘盈虧(元)’] > 0][‘盈虧(元)’]
 loses = trades_df[trades_df[‘盈虧(元)’] <= 0][‘盈虧(元)’]
 fig = go.Figure()
-fig.add_trace(go.Histogram(x=wins,  name=“獲利”, marker_color=’#00e676’, opacity=0.75, nbinsx=20))
-fig.add_trace(go.Histogram(x=loses, name=“虧損”, marker_color=’#ff1744’, opacity=0.75, nbinsx=20))
+fig.add_trace(go.Histogram(x=wins,  name="獲利", marker_color=’#00e676’, opacity=0.75, nbinsx=20))
+fig.add_trace(go.Histogram(x=loses, name="虧損", marker_color=’#ff1744’, opacity=0.75, nbinsx=20))
 fig.add_vline(x=0, line_color=’#fff’, line_dash=‘dash’)
-fig.update_layout(title=“盈虧分佈直方圖”, barmode=‘overlay’, height=280,
+fig.update_layout(title="盈虧分佈直方圖", barmode=‘overlay’, height=280,
 template=‘plotly_dark’, paper_bgcolor=’#0d0d0d’, plot_bgcolor=’#151520’,
 margin=dict(l=40, r=20, t=40, b=30))
 return fig
@@ -439,9 +439,9 @@ monthly = df.groupby(‘月份’)[‘盈虧(元)’].sum().reset_index()
 colors  = [’#00e676’ if v >= 0 else ‘#ff1744’ for v in monthly[‘盈虧(元)’]]
 fig = go.Figure(go.Bar(x=monthly[‘月份’], y=monthly[‘盈虧(元)’],
 marker_color=colors,
-text=monthly[‘盈虧(元)’].apply(lambda x: f”{x:+,.0f}”),
+text=monthly[‘盈虧(元)’].apply(lambda x: f"{x:+,.0f}"),
 textposition=‘outside’))
-fig.update_layout(title=“月度盈虧統計”, height=280, template=‘plotly_dark’,
+fig.update_layout(title="月度盈虧統計", height=280, template=‘plotly_dark’,
 paper_bgcolor=’#0d0d0d’, plot_bgcolor=’#151520’,
 margin=dict(l=40, r=20, t=40, b=30))
 return fig
@@ -453,9 +453,9 @@ return fig
 # ═══════════════════════════════════════════════════════════
 
 with st.sidebar:
-st.markdown(”## ⚙️ 系統設定”)
-page = st.radio(“功能模組”, [“📡 實時掃描”, “🔬 回測分析”, “📊 多股比較”])
-st.markdown(”—”)
+st.markdown("## ⚙️ 系統設定")
+page = st.radio("功能模組", ["📡 實時掃描", "🔬 回測分析", "📊 多股比較"])
+st.markdown("—")
 
 ```
 st.markdown("### 股票清單")
@@ -495,7 +495,7 @@ st.markdown("""<div style="font-size:12px;color:#666;">
 
 # ═══════════════════════════════════════════════════════════
 
-st.markdown(f”””
+st.markdown(f"""
 
 <div style="background:linear-gradient(90deg,#0d0d2e,#1a1a3e);
      padding:16px 24px;border-radius:10px;margin-bottom:16px;border:1px solid #333;">
@@ -515,8 +515,8 @@ st.rerun()
 
 # ═══════════════════════════════════════════════════════════
 
-if page == “📡 實時掃描”:
-scan_btn = st.button(“🔍 立即掃描”, type=“primary”)
+if page == "📡 實時掃描":
+scan_btn = st.button("🔍 立即掃描", type="primary")
 
 ```
 if scan_btn or auto_refresh:
@@ -634,16 +634,16 @@ if scan_btn or auto_refresh:
 - 🎯 目標：**{tg2:.2f}**（預期獲利 {gain:,.0f} 元）
 - 📊 DIF={float(last[‘DIF’]):.3f}  DEA={float(last[‘DEA’]):.3f}  MACD柱={float(last[‘MACD_BAR’]):.3f}
   """)
-  elif sig2 == “賣出” and bp2:
+  elif sig2 == "賣出" and bp2:
   gain = abs(bp2-tg2)*shares; loss = abs(sl2-bp2)*shares
-  st.error(f”””
+  st.error(f"""
   🔴 **操作指令 → 立即以 {bp2:.2f} 賣出/做空 {shares} 股**
 - 🛑 止損：**{sl2:.2f}**（最大虧損 {loss:,.0f} 元）
 - 🎯 目標：**{tg2:.2f}**（預期獲利 {gain:,.0f} 元）
 - 📊 DIF={float(last[‘DIF’]):.3f}  DEA={float(last[‘DEA’]):.3f}（雙負空頭特徵）
   """)
   else:
-  st.info(“⚪ **觀望** — 等待EMA排列明確 + MACD金/死叉 + 量能配合”)
+  st.info("⚪ **觀望** — 等待EMA排列明確 + MACD金/死叉 + 量能配合")
   
   ```
         show_cols = ['Open','High','Low','Close','Volume','EMA5','EMA10','DIF','DEA','MACD_BAR']
@@ -660,10 +660,10 @@ if scan_btn or auto_refresh:
 
 # ═══════════════════════════════════════════════════════════
 
-elif page == “🔬 回測分析”:
+elif page == "🔬 回測分析":
 st.markdown(’<div class="section-title">🔬 策略回測引擎</div>’, unsafe_allow_html=True)
-bt_ticker = st.selectbox(“選擇回測股票”, tickers)
-bt_btn    = st.button(“▶️ 執行回測”, type=“primary”)
+bt_ticker = st.selectbox("選擇回測股票", tickers)
+bt_btn    = st.button("▶️ 執行回測", type="primary")
 
 ```
 if bt_btn:
@@ -823,9 +823,9 @@ else:
 
 # ═══════════════════════════════════════════════════════════
 
-elif page == “📊 多股比較”:
+elif page == "📊 多股比較":
 st.markdown(’<div class="section-title">📊 多股回測勝率比較</div>’, unsafe_allow_html=True)
-compare_btn = st.button(“🔄 開始全部回測比較”, type=“primary”)
+compare_btn = st.button("🔄 開始全部回測比較", type="primary")
 
 ```
 if compare_btn:
@@ -956,8 +956,8 @@ else:
 
 # ═══════════════════════════════════════════════════════════
 
-st.markdown(”—”)
-st.markdown(”””
+st.markdown("—")
+st.markdown("""
 
 <div style="text-align:center;color:#444;font-size:12px;padding:10px;">
 ⚠️ 本系統僅供研究參考，回測績效不代表未來表現。股市有風險，投資請謹慎評估。<br>
