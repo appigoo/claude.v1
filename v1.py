@@ -448,7 +448,7 @@ with st.sidebar:
     st.markdown("—")
 
     st.markdown("### 股票清單")
-    default_tickers = "0050.TW\n2330.TW\n2317.TW\n2454.TW\n2382.TW\nNVDA\nTSLA\nAAPL"
+    default_tickers = "TSLA\nNIO.TW\nTSLL\nXPEV\nAMZN\nNVDA\nMETA\nAAPL\nGOOGL\nAAPL\nNVDA\nMSFT\nTSM\nGLD\nBTC-USD\nQQQ"
     ticker_input = st.text_area("每行一個代碼", default_tickers, height=170)
     tickers = [t.strip().upper() for t in ticker_input.split('\n') if t.strip()]
 
