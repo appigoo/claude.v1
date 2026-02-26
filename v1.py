@@ -453,7 +453,7 @@ with st.sidebar:
     tickers = [t.strip().upper() for t in ticker_input.split('\n') if t.strip()]
 
     st.markdown("### 交易參數")
-    interval    = st.selectbox("K棒週期", ["5m","15m","1h","1d"], index=0)
+    interval    = st.selectbox("K棒週期", ["5m","15m","30m","1h","1d"], index=0)
     shares      = st.number_input("交易股數", 1, 100000, 100)
     atr_stop    = st.slider("止損ATR倍數",  1.0, 4.0, 2.0, 0.5)
     atr_target  = st.slider("目標ATR倍數",  1.0, 6.0, 3.0, 0.5)
