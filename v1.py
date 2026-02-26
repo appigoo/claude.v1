@@ -14,14 +14,13 @@ import time
 # ─────────────────────────────────────────────────────────
 
 st.set_page_config(
-page_title=“📈 股票自動掃描系統”,
-page_icon=“📈”,
-layout=“wide”,
-initial_sidebar_state=“expanded”
+page_title="📈 股票自動掃描系統",
+page_icon="📈",
+layout="wide",
+initial_sidebar_state="expanded"
 )
 
-st.markdown(”””
-
+st.markdown("""
 <style>
 body { background-color: #0d0d0d; }
 .stApp { background-color: #111111; color: #f0f0f0; }
@@ -34,8 +33,7 @@ body { background-color: #0d0d0d; }
 .metric-card { background: #1e1e1e; border-radius: 8px; padding: 12px; margin: 4px; border: 1px solid #333; }
 .signal-title { font-size: 18px; font-weight: bold; margin-bottom: 6px; }
 </style>
-
-“””, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────
 
@@ -55,27 +53,25 @@ macd_bar = (dif - dea) * 2
 return dif, dea, macd_bar
 
 def calc_indicators(df):
-c = df[‘Close’]
-df[‘EMA5’]   = calc_ema(c, 5)
-df[‘EMA10’]  = calc_ema(c, 10)
-df[‘EMA20’]  = calc_ema(c, 20)
-df[‘EMA30’]  = calc_ema(c, 30)
-df[‘EMA60’]  = calc_ema(c, 60)
-df[‘EMA120’] = calc_ema(c, 120)
-df[‘EMA200’] = calc_ema(c, 200)
-df[‘MA5’]    = c.rolling(5).mean()
-df[‘MA15’]   = c.rolling(15).mean()
-df[‘DIF’], df[‘DEA’], df[‘MACD_BAR’] = calc_macd(c)
-df[‘VOL_MA5’] = df[‘Volume’].rolling(5).mean()
-df[‘VOL_MA20’] = df[‘Volume’].rolling(20).mean()
+c = df['Close']
+df['EMA5']   = calc_ema(c, 5)
+df['EMA10']  = calc_ema(c, 10)
+df['EMA20']  = calc_ema(c, 20)
+df['EMA30']  = calc_ema(c, 30)
+df['EMA60']  = calc_ema(c, 60)
+df['EMA120'] = calc_ema(c, 120)
+df['EMA200'] = calc_ema(c, 200)
+df['MA5']    = c.rolling(5).mean()
+df['MA15']   = c.rolling(15).mean()
+df['DIF'], df['DEA'], df['MACD_BAR'] = calc_macd(c)
+df['VOL_MA5'] = df['Volume'].rolling(5).mean()
+df['VOL_MA20'] = df['Volume'].rolling(20).mean()
 
-```
 # 動量
 df['ROC'] = c.pct_change(5) * 100
 # ATR 用於止損
 df['ATR'] = (df['High'] - df['Low']).rolling(14).mean()
 return df
-```
 
 # ─────────────────────────────────────────────────────────
 
@@ -84,14 +80,13 @@ return df
 # ─────────────────────────────────────────────────────────
 
 def generate_signal(df, shares=10):
-“””
+"""
 買入條件（上漲趨勢特徵）：
 1. EMA5 > EMA10 > EMA20（短期多頭排列）
 2. DIF > DEA 且 DIF 由負轉正或 MACD柱 > 0
 3. 成交量 > 前5日均量（放量突破）
 4. 收盤價 > MA5 且 MA5 > MA15（短期均線多頭）
 
-```
 賣出條件（下跌趨勢特徵）：
   1. EMA5 < EMA10 < EMA20（短期空頭排列）
   2. DIF < DEA 且兩者均 < 0（MACD死叉且在負區）
@@ -189,7 +184,6 @@ else:
     details["得分"] = f"買入{buy_score} / 賣出{sell_score}"
 
 return signal, buy_price, stop_loss, target, details
-```
 
 # ─────────────────────────────────────────────────────────
 
@@ -198,7 +192,7 @@ return signal, buy_price, stop_loss, target, details
 # ─────────────────────────────────────────────────────────
 
 @st.cache_data(ttl=60)
-def fetch_data(ticker, period=“5d”, interval=“5m”):
+def fetch_data(ticker, period="5d", interval="5m"):
 try:
 df = yf.download(ticker, period=period, interval=interval,
 auto_adjust=True, progress=False)
@@ -219,7 +213,6 @@ return None
 def plot_chart(df, ticker, signal, buy_price, stop_loss, target):
 df_plot = df.tail(100).copy()
 
-```
 fig = make_subplots(
     rows=3, cols=1,
     shared_xaxes=True,
@@ -287,7 +280,6 @@ fig.update_xaxes(showgrid=True, gridcolor='#333')
 fig.update_yaxes(showgrid=True, gridcolor='#333')
 
 return fig
-```
 
 # ─────────────────────────────────────────────────────────
 
@@ -296,9 +288,8 @@ return fig
 # ─────────────────────────────────────────────────────────
 
 with st.sidebar:
-st.markdown(”## ⚙️ 掃描設定”)
+st.markdown("## ⚙️ 掃描設定")
 
-```
 st.markdown("### 股票清單")
 default_tickers = "0050.TW\n2330.TW\n2317.TW\n2454.TW\n2382.TW\nAAPL\nTSLA\nNVDA"
 ticker_input = st.text_area("每行一個代碼", default_tickers, height=180)
@@ -315,8 +306,6 @@ min_score_buy  = st.slider("最低買入得分（滿8）", 3, 8, 5)
 st.markdown("---")
 st.markdown("### 📊 策略說明")
 st.markdown("""
-```
-
 **買入信號條件：**
 
 - EMA5 > EMA10 > EMA20 多頭排列
@@ -338,7 +327,7 @@ st.markdown("""
 **目標設定：**
 
 - 3×ATR（風報比 1:1.5）
-  “””)
+""")
 
 # ─────────────────────────────────────────────────────────
 
@@ -346,8 +335,8 @@ st.markdown("""
 
 # ─────────────────────────────────────────────────────────
 
-st.markdown(”# 📈 股票自動掃描系統”)
-st.markdown(f”**更新時間：** {datetime.now().strftime(’%Y-%m-%d %H:%M:%S’)} | **週期：** {interval}”)
+st.markdown("# 📈 股票自動掃描系統")
+st.markdown(f"**更新時間：** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | **週期：** {interval}")
 
 if auto_refresh:
 time.sleep(0.5)
@@ -357,18 +346,17 @@ st.rerun()
 
 col_btn1, col_btn2 = st.columns([1, 5])
 with col_btn1:
-scan_btn = st.button(“🔍 立即掃描”, use_container_width=True)
+scan_btn = st.button("🔍 立即掃描", use_container_width=True)
 
 # ─── 掃描結果 ───
 
-st.markdown(”—”)
-st.markdown(”## 📋 掃描結果總覽”)
+st.markdown("---")
+st.markdown("## 📋 掃描結果總覽")
 
 if scan_btn or auto_refresh:
 results = []
-prog = st.progress(0, text=“掃描中…”)
+prog = st.progress(0, text="掃描中...")
 
-```
 for i, ticker in enumerate(tickers):
     prog.progress((i+1)/len(tickers), text=f"掃描 {ticker}...")
     df = fetch_data(ticker, data_period, interval)
@@ -423,8 +411,6 @@ if buy_results:
     st.markdown("### 🟢 買入信號")
     for r in buy_results:
         st.markdown(f"""
-```
-
 <div class="buy-signal">
   <div class="signal-title">🟢 {r['代碼']} — 買入信號</div>
   💰 現價：<b>{r['現價']}</b> &nbsp;|&nbsp;
@@ -436,14 +422,11 @@ if buy_results:
   📉 最大虧損：<b>{r['潛在虧損%']}</b>
 </div>""", unsafe_allow_html=True)
 
-```
 # ── 賣出信號區 ──
 if sell_results:
     st.markdown("### 🔴 賣出信號")
     for r in sell_results:
         st.markdown(f"""
-```
-
 <div class="sell-signal">
   <div class="signal-title">🔴 {r['代碼']} — 賣出信號</div>
   💰 現價：<b>{r['現價']}</b> &nbsp;|&nbsp;
@@ -454,22 +437,18 @@ if sell_results:
   📉 最大虧損：<b>{r['潛在虧損%']}</b>
 </div>""", unsafe_allow_html=True)
 
-```
 # ── 觀望區 ──
 if hold_results:
     st.markdown("### ⚪ 觀望/無數據")
     cols = st.columns(min(len(hold_results), 4))
     for i, r in enumerate(hold_results):
         cols[i % 4].markdown(f"""
-```
-
 <div class="neutral-signal">
   <b>{r['代碼']}</b><br>
   現價：{r['現價']}<br>
   狀態：{r['信號']}
 </div>""", unsafe_allow_html=True)
 
-```
 # ── 詳細圖表 ──
 st.markdown("---")
 st.markdown("## 📊 個股詳細分析")
@@ -514,30 +493,28 @@ if valid:
         max_loss = abs(bp - sl) * shares
         gain = abs(tg - bp) * shares
         st.success(f"""
-```
-
 🟢 **買入指令**
 
 📥 **立即以 {bp:.2f} 買入 {shares} 股**（總成本：{cost:,.0f} 元）
 🛑 **止損：{sl:.2f}**（若跌破立即賣出，最大虧損約 {max_loss:,.0f} 元）
 🎯 **目標：{tg:.2f}**（達到時分批賣出，預計獲利 {gain:,.0f} 元）
 
-📊 觸發原因：EMA多頭排列 + DIF({last_dif:.3f}) {’>’ if last_dif>last_dea else ‘<’} DEA({last_dea:.3f}) + MACD柱({last_macd:.3f})
-“””)
-elif sig == “賣出” and bp:
+📊 觸發原因：EMA多頭排列 + DIF({last_dif:.3f}) {'>' if last_dif>last_dea else '<'} DEA({last_dea:.3f}) + MACD柱({last_macd:.3f})
+""")
+elif sig == "賣出" and bp:
 max_loss = abs(sl - bp) * shares
 gain = abs(bp - tg) * shares
-st.error(f”””
+st.error(f"""
 🔴 **賣出指令（或減倉/做空）**
 
 📤 **立即以 {bp:.2f} 賣出 {shares} 股**
 🛑 **止損：{sl:.2f}**（若反彈超過此價，回補止損，最大虧損約 {max_loss:,.0f} 元）
 🎯 **目標：{tg:.2f}**（達到時回補，預計獲利 {gain:,.0f} 元）
 
-📊 觸發原因：EMA空頭排列 + DIF({last_dif:.3f}) {’<’ if last_dif<last_dea else ‘>’} DEA({last_dea:.3f}) + 雙線負值（圖表下跌特徵）
-“””)
+📊 觸發原因：EMA空頭排列 + DIF({last_dif:.3f}) {'<' if last_dif<last_dea else '>'} DEA({last_dea:.3f}) + 雙線負值（圖表下跌特徵）
+""")
 else:
-st.info(f”””
+st.info(f"""
 ⚪ **觀望指令**
 
 目前信號不明確，建議等待以下確認再入場：
@@ -545,10 +522,9 @@ st.info(f”””
 - 等待 EMA5 明確穿越 EMA10
 - 等待 DIF 與 DEA 形成金叉或死叉
 - 確認成交量配合方向（放量突破）
-  “””)
+""")
   
-  ```
-    # 近期數據表
+  # 近期數據表
     st.markdown("#### 📋 近10根K棒數據")
     show_cols = ['Open','High','Low','Close','Volume','EMA5','EMA10','DIF','DEA','MACD_BAR']
     st.dataframe(
@@ -556,11 +532,10 @@ st.info(f”””
             subset=['Close'], cmap='RdYlGn'),
         use_container_width=True
     )
-  ```
 
 else:
 # 首次載入提示
-st.info(”””
+st.info("""
 👆 請點擊「立即掃描」開始分析股票
 
 **系統功能：**
@@ -576,11 +551,10 @@ st.info(”””
 
 - 下跌特徵(02/23)：空頭EMA排列 + DIF/DEA雙負 + 放量下殺
 - 上漲特徵(02/17-02/20)：多頭EMA排列 + MACD金叉 + 放量突破
-  “””)
+""")
 
-st.markdown(”—”)
-st.markdown(”””
-
+st.markdown("---")
+st.markdown("""
 <div style="text-align:center; color:#555; font-size:12px;">
 ⚠️ 本程式僅供參考，不構成投資建議。股票投資有風險，請自行評估並謹慎決策。
 </div>
