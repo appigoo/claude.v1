@@ -1,10 +1,3 @@
-“””
-股票自動掃描程式 - 基於EMA/MACD/成交量實時監控與買賣信號
-分析基礎：
-下跌趨勢特徵（02/23）：EMA均線空頭排列、DIF<DEA均為負值、MACD柱由正轉負、成交量放量下殺
-上漲趨勢特徵（02/17、02/19、02/20）：EMA均線多頭排列、DIF>DEA均為正值/向上交叉、價格突破壓力
-“””
-
 import streamlit as st
 import yfinance as yf
 import pandas as pd
