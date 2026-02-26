@@ -28,7 +28,7 @@ st.set_page_config(
 st.markdown("""
 
 <style>
-.stApp { background-color: #0d0d0d; color: #e0e0e0; }
+.stApp { background-color: #121212; color: #f0f0f0; }
 .block-container { padding-top: 1rem; }
 .buy-signal {
     background: linear-gradient(135deg,#001a00,#003300);
